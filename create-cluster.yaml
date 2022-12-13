@@ -1,0 +1,58 @@
+---
+- name: create cluster
+  hosts: localhost
+  vars:
+    - service_account: example@my-project.iam.gserviceaccount.com 
+    - service_account_file: /home/user/documents/file
+    - gcp_project: my-project
+    - network_name: my-network
+    - cluster_name: my-cluster
+    - node_number: 1
+    - machine_type: e2-standard-2
+    - disk_size: 10
+    - location: northamerica-northeast2
+    - node_pool_name: my-pool
+  
+  tasks:
+    - name: create GCP network  
+      google.cloud.gcp_compute_network:    
+        name: "{{ network_name }}"
+        auto_create_subnetworks: 'true'    
+        project: "{{ gcp_project }}"   
+        auth_kind: serviceaccount
+        service_account_file: "{{ service_account_file }}"
+        state: present
+      register: network
+
+    - name: create a cluster
+      gcp_container_cluster:
+        name: "{{ cluster_name }}"
+        initial_node_count: "{{ node_number }}"
+        node_config:
+          machine_type: "{{ machine_type }}"
+          disk_size_gb: "{{ disk_size }}"
+          service_account: "{{ service_account }}"
+        location: "{{ zone }}"
+        network: "{{ network.name }}"
+        project: "{{ gcp_project }}"
+        auth_kind: serviceaccount
+        service_account_file: "{{ service_account_file }}"
+        state: present
+      register: cluster
+
+    - name: get credentials
+      shell: "touch cluster-gcp && export KUBECONFIG=cluster-gcp && \
+         gcloud container clusters get-credentials {{ cluster_name }} --zone={{ zone }}"
+
+    - name: create a node pool
+      google.cloud.gcp_container_node_pool:
+        name: "{{ node_pool_name }}"
+        initial_node_count: 1
+        cluster: "{{ cluster }}"
+        config:
+          service_account: "{{ service_account }}"
+        location: "{{ zone }}"
+        project: "{{ gcp_project }}"
+        auth_kind: serviceaccount
+        service_account_file: "{{ service_account_file }}"
+        state: present
