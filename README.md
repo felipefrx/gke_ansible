@@ -2,7 +2,11 @@
 Ansible playbook to upload a gke cluster.
 
 ## Requirements
-**You need install on the host:**
+**You need to install the collection google.cloud.
+```
+ansible-galaxy collection install google.cloud
+```
+**The below requirements are needed on the host:**
 ```
 python >= 2.6
 requests >= 2.18.4
