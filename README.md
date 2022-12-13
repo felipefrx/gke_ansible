@@ -16,5 +16,5 @@ google-auth >= 1.3.0
 
 ## Command to run the playbook
 ```
-ansible-playbook ./ansible-playbook/create-cluster.yaml -i localhost
+ansible-playbook ./ansible-playbook/cluster-create.yaml -i localhost
 ```
