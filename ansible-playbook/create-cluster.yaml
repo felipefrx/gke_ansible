@@ -41,8 +41,8 @@
       register: cluster
 
     - name: get credentials
-      shell: "touch cluster-gcp && export KUBECONFIG=cluster-gcp && \
-         gcloud container clusters get-credentials {{ cluster_name }} --zone={{ zone }}"
+      shell: touch cluster-gcp && export KUBECONFIG=cluster-gcp && \
+         gcloud container clusters get-credentials "{{ cluster_name }}" --zone="{{ zone }}"
 
     - name: create a node pool
       google.cloud.gcp_container_node_pool:
