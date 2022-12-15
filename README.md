@@ -1,4 +1,4 @@
-# gke-ansible-playbook
+# GKE Ansible playbook
 Ansible playbook to upload a gke cluster.
 
 ## Requirements
